@@ -1,4 +1,4 @@
-from Tetris_ai import *
+from tetris_ai import *
 import random
 
 def run_single_chromosome(chromosome, visualize=True, seed=42):
