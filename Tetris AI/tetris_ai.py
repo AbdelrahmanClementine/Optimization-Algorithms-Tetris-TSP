@@ -4,9 +4,13 @@ import pygame
 import sys
 from pygame.locals import *
 import tetris_base
+import random
 
-POPULATION_SIZE = 10
-GENERATIONS = 5
+RANDOM_SEED = 42
+random.seed(RANDOM_SEED)
+
+POPULATION_SIZE = 20
+GENERATIONS = 30
 MUTATION_RATE = 0.1
 MUTATION_AMOUNT = 0.5
 
@@ -29,6 +33,7 @@ def evaluate_chromosome(chromosome):
         return 0  
 
 def run_ai_game(chromosome):
+    PieceNum = 0
     board = tetris_base.get_blank_board()
     score = 0
     falling_piece = tetris_base.get_new_piece()
@@ -63,10 +68,13 @@ def run_ai_game(chromosome):
         tetris_base.draw_board(board)
         tetris_base.draw_status(score, 1)
         tetris_base.draw_next_piece(next_piece)
+        PieceNum+=1
         pygame.display.update()
         tetris_base.FPSCLOCK.tick(tetris_base.FPS)
         
         falling_piece = None
+        
+    return PieceNum
 
 
 def select_best_move(board, piece, initial_holes, initial_blocking, chromosome):
@@ -123,20 +131,47 @@ def mutate(chromosome):
             if random.random() < MUTATION_RATE else gene 
             for gene in chromosome]
 
+def log_best_chromosomes(population, fitnesses, generation):
+    paired = list(zip(population, fitnesses))
+    paired.sort(key=lambda x: x[1], reverse=True)
+    top2 = paired[:2]
+    
+    with open("log.txt", "a") as log_file:
+        log_file.write(f"\nGeneration {generation}:\n")
+        for i, (chrom, fit) in enumerate(top2, 1):
+            log_file.write(f"  #{i} Chromosome: {chrom}, Score: {fit:.2f}\n")
+
+
 def main():
+    with open("log.txt", "w") as f:
+        f.write("=== Tetris AI Genetic Algorithm Log ===\n")
+
     population = [create_chromosome() for _ in range(POPULATION_SIZE)]
+
     for gen in range(GENERATIONS):
         fitnesses = [evaluate_chromosome(c) for c in population]
-        print(f"Generation {gen}, Best: {max(fitnesses)}, Avg: {sum(fitnesses)/len(fitnesses)}")
+
+        log_best_chromosomes(population, fitnesses, gen)
+
+        paired = list(zip(population, fitnesses))
+        paired.sort(key=lambda x: x[1], reverse=True)
+
+        best_half = [chrom for chrom, _ in paired[:POPULATION_SIZE // 2]]
+
+        print(f"Generation {gen}, Best: {paired[0][1]}, Avg: {sum(fitnesses)/len(fitnesses)}")
+
         parents = select_parents(population, fitnesses)
-        next_pop = []
-        while len(next_pop) < POPULATION_SIZE:
+        new_half = []
+
+        while len(new_half) < POPULATION_SIZE - len(best_half):
             p1, p2 = random.sample(parents, 2)
             child = crossover(p1, p2)
-            next_pop.append(mutate(child))
-        population = next_pop
+            new_half.append(mutate(child))
 
-    best = max(population, key=lambda c: evaluate_chromosome(c))
+        population = best_half + new_half
+
+    final_fitnesses = [evaluate_chromosome(c) for c in population]
+    best = max(zip(population, final_fitnesses), key=lambda x: x[1])[0]
     run_ai_game(best)
 
 if __name__ == '__main__':
