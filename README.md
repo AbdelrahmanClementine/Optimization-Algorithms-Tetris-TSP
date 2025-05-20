@@ -43,7 +43,7 @@ pip install pygame
 python tetris_ai.py
 ```
 
-The program will train the AI over several generations and then display the best-performing agent in action.
+- The program will train the AI over several generations and then display the best-performing agent in action.
 
 
 ==========================================================================================================================================================
