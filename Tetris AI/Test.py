@@ -1,17 +1,18 @@
 from tetris_ai import *
 import random
 
-def run_single_chromosome(chromosome, visualize=True, seed=42):
+RANDOM_SEED = 42
+random.seed(RANDOM_SEED)
+
+def run_single_chromosome(chromosome, max, visualize=True, seed=42):
     random.seed(seed)
     if visualize:
-        num = run_ai_game(chromosome)  
-        if num > 600 :
-            print("WIN")
-        else :
-            print("LOSE")    
+         Score = run_ai_game(chromosome, max)
+         print(Score)
     else:
-        return evaluate_chromosome(chromosome) 
-    
+        return evaluate_chromosome(chromosome)
 
-chromosome =  [0.4729424283280248, 0.3533989748458226, 1.2085170054125585, 0.0549371543804511] 
-run_single_chromosome(chromosome, visualize=True, seed=42)    
+
+chromosome = [-53.61353285108744, -79.79971411805417, -44.99413632617615, -55.35785237023545, 47.29424283280247, 35.33989748458225, 78.43591354096907, -82.61223347411678, -15.77137105734543]
+
+run_single_chromosome(chromosome, max=600, visualize=True, seed=42)
