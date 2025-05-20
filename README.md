@@ -1,3 +1,5 @@
+# ***Computational Cognitive Science Project For Implementing GA to Play Tetris Using AI & and ACO to solve TSP***  
+
 # 1. Tetris AI
 
 This project implements an AI agent that learns to play Tetris using a genetic algorithm. The AI evaluates moves based on a set of heuristics and evolves over generations to improve its performance.
@@ -43,16 +45,14 @@ python tetris_ai.py
 
 The program will train the AI over several generations and then display the best-performing agent in action.
 
-## License
 
-This project is open-source and available under the MIT License.
 ==========================================================================================================================================================
 
 # 2. Ant Colony Optimization for TSP
 
 This project implements the Ant Colony Optimization (ACO) algorithm to solve the Traveling Salesman Problem (TSP). The implementation includes both a GUI application and Jupyter notebooks for algorithm analysis and visualization.
 
-## Project Structure
+## Task Structure
 
 ```
 TSP/
